@@ -1,0 +1,15 @@
+name: Dragon-dmg
+version: 1.0.0
+description: Show damage done to the ender dragon after the kill
+author: Hraponssi
+main: net.hraponssi.dragondmg.main.Main
+api-version: 1.18
+commands:
+  dragondmg:
+    description: Manage dragon dmg
+    usage: /<command> <subcommand>
+    permission: dragondmg.dragondmg
+permissions:
+  dragondmg.dragondmg:
+    description: Allows you to run /dragondmg
+    default: op
