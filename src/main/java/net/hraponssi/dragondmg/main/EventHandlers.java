@@ -36,7 +36,7 @@ public class EventHandlers implements Listener {
     				total += entry.getValue();
     			}
     			String[] tsplit = Double.toString(total).split("\\.");
-    			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
+    			if(plugin.announcekiller) Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
     			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListTitle.replace("%totaldmg%", tsplit[0])));
     			boolean done = false;
     			while(!done) { //Sends the player list in order of damage done
