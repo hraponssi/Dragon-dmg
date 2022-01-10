@@ -6,6 +6,8 @@ Damage tracked: melee, arrows, tridents
 
 [bStats link](https://bstats.org/plugin/bukkit/Dragon-dmg/13878)
 
+[Spigotmc](https://www.spigotmc.org/resources/dragon-dmg.99041)
+
 ### Building ###
 
 This project uses maven. Build with "mvn"
