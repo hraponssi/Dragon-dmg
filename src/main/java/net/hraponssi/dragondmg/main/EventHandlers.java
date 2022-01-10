@@ -36,8 +36,8 @@ public class EventHandlers implements Listener {
     				total += entry.getValue();
     			}
     			String[] tsplit = Double.toString(total).split("\\.");
-    			if(plugin.announcekiller) Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
-    			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListTitle.replace("%totaldmg%", tsplit[0])));
+    			if(plugin.announceKiller) plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
+    			plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListTitle.replace("%totaldmg%", tsplit[0])));
     			boolean done = false;
     			while(!done) { //Sends the player list in order of damage done
     				double highest = -1;
@@ -52,7 +52,7 @@ public class EventHandlers implements Listener {
         				double dmg = entry.getValue();
         				String[] split = Double.toString(dmg).split("\\.");
         				if(dmg == highest) {
-        					Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListEntry.replace("%player%", entry.getKey()).replace("%dmg%", split[0])));
+        					plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListEntry.replace("%player%", entry.getKey()).replace("%dmg%", split[0])));
         					remove.add(entry.getKey());
         				}
         			}

@@ -4,7 +4,7 @@
 
 	<groupId>DragonDmg</groupId>
 	<artifactId>DragonDmg</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,11 +13,22 @@
 	<name>DragonDmg</name>
 	<description>Show damage done to the ender dragon after the kill.</description>
 
+	<pluginRepositories>
+    	<pluginRepository>
+        	<id>maven-snapshots</id>
+        	<url>https://repository.apache.org/content/repositories/snapshots/</url>
+    	</pluginRepository>
+	</pluginRepositories>
+
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
+		<repository>
+      		<id>sonatype-oss-snapshots</id>
+      		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    	</repository>
 	</repositories>
 	
 	<dependencies>

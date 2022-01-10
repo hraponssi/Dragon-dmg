@@ -4,3 +4,6 @@ dmglistentry: "&a%player% &7- &c%dmg% dmg"
 
 killermsg: "&d%killer% has killed the Ender Dragon!"
 announcekiller: true
+
+worldonlymsg: false
+worldname: world_the_end

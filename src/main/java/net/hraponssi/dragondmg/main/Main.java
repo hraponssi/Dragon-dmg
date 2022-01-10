@@ -1,17 +1,22 @@
 package net.hraponssi.dragondmg.main;
 
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements Listener {
 
-	boolean announcekiller;
+	boolean announceKiller;
+	boolean worldOnlyMsg;
 	
 	String dmgListTitle;
 	String dmgListEntry;
 	String killerMsg;
+	String worldName;
 	
 	@Override
 	public void onEnable() {
@@ -26,10 +31,24 @@ public class Main extends JavaPlugin implements Listener {
 	
 	public void loadConfig() {
 		reloadConfig();
-		announcekiller = getConfig().getBoolean("announcekiller");
+		announceKiller = getConfig().getBoolean("announcekiller");
+		worldOnlyMsg = getConfig().getBoolean("worldonlymsg");
+		worldName = getConfig().getString("worldname");
 		dmgListTitle = getConfig().getString("dmglisttitle");
 		dmgListEntry = getConfig().getString("dmglistentry");
 		killerMsg = getConfig().getString("killermsg");
+	}
+	
+	public void sendMessage(String msg) {
+		if(worldOnlyMsg) {
+			for(Player p : Bukkit.getOnlinePlayers()) {
+				if(p.getWorld().getName().equals(worldName)){
+					p.sendMessage(msg);
+				}
+			}
+		}else {
+			Bukkit.broadcastMessage(msg);
+		}
 	}
 			
 }
