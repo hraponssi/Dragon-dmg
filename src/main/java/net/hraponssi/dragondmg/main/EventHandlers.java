@@ -3,6 +3,7 @@ package net.hraponssi.dragondmg.main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +38,15 @@ public class EventHandlers implements Listener {
     			}
     			String[] tsplit = Double.toString(total).split("\\.");
     			if(plugin.announceKiller) plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
-    			plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListTitle.replace("%totaldmg%", tsplit[0])));
+    			if(plugin.killReward) {
+    				for(String reward : plugin.killRewards) {
+    					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+    							reward.replace("%killer%", e.getEntity().getKiller().getName()));
+    				}
+    			}
+    			plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+    					plugin.dmgListTitle.replace("%totaldmg%", tsplit[0]))
+    					.replace("%killer%", e.getEntity().getKiller().getName()));
     			boolean done = false;
     			while(!done) { //Sends the player list in order of damage done
     				double highest = -1;
@@ -52,7 +61,20 @@ public class EventHandlers implements Listener {
         				double dmg = entry.getValue();
         				String[] split = Double.toString(dmg).split("\\.");
         				if(dmg == highest) {
-        					plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.dmgListEntry.replace("%player%", entry.getKey()).replace("%dmg%", split[0])));
+        					plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+        							plugin.dmgListEntry.replace("%player%", entry.getKey())
+        							.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+        							.replace("%killer%", e.getEntity().getKiller().getName())));
+        					Random random = new Random();
+        					int dmgp = (Integer.parseInt(split[0])/Integer.parseInt(tsplit[0]))*100;
+        					if(plugin.dmgReward && random.nextInt(100)+1 <= dmgp) { //if dmg percent less or more than random 1-100 number
+        	    				for(String reward : plugin.dmgRewards) {
+        	    					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+        	    							reward.replace("%player%", entry.getKey())
+                							.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+                							.replace("%killer%", e.getEntity().getKiller().getName()));
+        	    				}
+        	    			}
         					remove.add(entry.getKey());
         				}
         			}
