@@ -20,111 +20,139 @@ import org.bukkit.projectiles.ProjectileSource;
 public class EventHandlers implements Listener {
 
 	Main plugin;
-	
+
 	HashMap<String, Double> dragonDamage = new HashMap<>();//name, damage
-	
+	HashMap<String, Integer> crystalKills = new HashMap<>();//name, crystal count
+
 	public EventHandlers(Main main) {
 		this.plugin = main;
 	}
-	
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent e) { //Dragon death
-    	EntityType type = e.getEntityType();
-    	if(type.equals(EntityType.ENDER_DRAGON)) {
-    		if(e.getEntity().getKiller().getType().equals(EntityType.PLAYER)) {
-    			double total = 0;
-    			for(Entry<String, Double> entry : dragonDamage.entrySet()) {
-    				total += entry.getValue();
-    			}
-    			String[] tsplit = Double.toString(total).split("\\.");
-    			if(plugin.announceKiller) plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
-    			if(plugin.killReward) {
-    				for(String reward : plugin.killRewards) {
-    					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
-    							reward.replace("%killer%", e.getEntity().getKiller().getName()));
-    				}
-    			}
-    			plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
-    					plugin.dmgListTitle.replace("%totaldmg%", tsplit[0]))
-    					.replace("%killer%", e.getEntity().getKiller().getName()));
-    			boolean done = false;
-    			while(!done) { //Sends the player list in order of damage done
-    				double highest = -1;
-    				ArrayList<String> remove = new ArrayList<>();
-    				for(Entry<String, Double> entry : dragonDamage.entrySet()) {
-        				double dmg = entry.getValue();
-        				if(dmg > highest) {
-        					highest = dmg;
-        				}
-        			}
-    				for(Entry<String, Double> entry : dragonDamage.entrySet()) {
-        				double dmg = entry.getValue();
-        				String[] split = Double.toString(dmg).split("\\.");
-        				if(dmg == highest) {
-        					plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
-        							plugin.dmgListEntry.replace("%player%", entry.getKey())
-        							.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
-        							.replace("%killer%", e.getEntity().getKiller().getName())));
-        					Random random = new Random();
-        					int dmgp = (Integer.parseInt(split[0])/Integer.parseInt(tsplit[0]))*100;
-        					if(plugin.dmgReward && random.nextInt(100)+1 <= dmgp) { //if dmg percent less or more than random 1-100 number
-        	    				for(String reward : plugin.dmgRewards) {
-        	    					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
-        	    							reward.replace("%player%", entry.getKey())
-                							.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
-                							.replace("%killer%", e.getEntity().getKiller().getName()));
-        	    				}
-        	    			}
-        					remove.add(entry.getKey());
-        				}
-        			}
-    				for(String r : remove) {
-    					dragonDamage.remove(r);
-    				}
-    				if(dragonDamage.size() <= 0) done = true;
-    			}
-    		}
-    	}
-    }
-    
-    @EventHandler
-    public void onEntityDamagedByEntity(EntityDamageByEntityEvent e) { //Track different types of attacks
-    	EntityType type = e.getEntityType();
-    	if(type.equals(EntityType.ENDER_DRAGON)) {
-    		if(e.getDamager().getType().equals(EntityType.PLAYER)) {
-    			Player p = (Player) e.getDamager();
-    			if(dragonDamage.containsKey(p.getName())) {
-    				double num = dragonDamage.get(p.getName());
-    				dragonDamage.replace(p.getName(), num+e.getDamage());
-    			}else {
-    				dragonDamage.put(p.getName(), e.getDamage());				
-    			}
-    		} else if(e.getDamager().getType().equals(EntityType.ARROW)) {
-    			Arrow arrow = (Arrow) e.getDamager();
-                ProjectileSource en = arrow.getShooter();
-                if(en instanceof Player) {
-                	Player p = (Player) en;
-                	if(dragonDamage.containsKey(p.getName())) {
-        				double num = dragonDamage.get(p.getName());
-        				dragonDamage.replace(p.getName(), num+e.getDamage());
-        			}else {
-        				dragonDamage.put(p.getName(), e.getDamage());				
-        			}
-                }
-    		} else if(e.getDamager().getType().equals(EntityType.TRIDENT)) {
-    			Trident trident = (Trident) e.getDamager();
-                ProjectileSource en = trident.getShooter();
-                if(en instanceof Player) {
-                	Player p = (Player) en;
-                	if(dragonDamage.containsKey(p.getName())) {
-        				double num = dragonDamage.get(p.getName());
-        				dragonDamage.replace(p.getName(), num+e.getDamage());
-        			}else {
-        				dragonDamage.put(p.getName(), e.getDamage());				
-        			}
-                }
-    		}
-    	}
-    }
-	
+
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent e) { //Dragon death
+		EntityType type = e.getEntityType();
+		if(type.equals(EntityType.ENDER_DRAGON)) {
+			if(e.getEntity().getKiller().getType().equals(EntityType.PLAYER)) {
+				double total = 0;
+				for(Entry<String, Double> entry : dragonDamage.entrySet()) {
+					total += entry.getValue();
+				}
+				String[] tsplit = Double.toString(total).split("\\.");
+				if(plugin.announceKiller) plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
+				if(plugin.killReward) {
+					for(String reward : plugin.killRewards) {
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+								reward.replace("%killer%", e.getEntity().getKiller().getName()));
+					}
+				}
+				plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+						plugin.dmgListTitle.replace("%totaldmg%", tsplit[0]))
+						.replace("%killer%", e.getEntity().getKiller().getName()));
+				boolean done = false;
+				while(!done) { //Sends the player list in order of damage done
+					double highest = -1;
+					ArrayList<String> remove = new ArrayList<>();
+					for(Entry<String, Double> entry : dragonDamage.entrySet()) {
+						double dmg = entry.getValue();
+						if(dmg > highest) {
+							highest = dmg;
+						}
+					}
+					for(Entry<String, Double> entry : dragonDamage.entrySet()) {
+						double dmg = entry.getValue();
+						String[] split = Double.toString(dmg).split("\\.");
+						if(dmg == highest) {
+							plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+									plugin.dmgListEntry.replace("%player%", entry.getKey())
+									.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+									.replace("%crystals%", crystalKills.get(entry.getKey()).toString())
+									.replace("%killer%", e.getEntity().getKiller().getName())));
+							Random random = new Random();
+							int dmgp = (Integer.parseInt(split[0])/Integer.parseInt(tsplit[0]))*100;
+							if(plugin.dmgReward && random.nextInt(100)+1 <= dmgp) { //if dmg percent less or more than random 1-100 number
+								for(String reward : plugin.dmgRewards) {
+									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+											reward.replace("%player%", entry.getKey())
+											.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+											.replace("%crystals%", crystalKills.get(entry.getKey()).toString())
+											.replace("%killer%", e.getEntity().getKiller().getName()));
+								}
+							}
+							remove.add(entry.getKey());
+						}
+					}
+					for(String r : remove) {
+						dragonDamage.remove(r);
+						crystalKills.remove(r);
+					}
+					if(dragonDamage.size() <= 0) done = true;
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onEntityDamagedByEntity(EntityDamageByEntityEvent e) { //Track different types of attacks
+		EntityType type = e.getEntityType();
+		if(e.getDamager().getType().equals(EntityType.PLAYER)) {
+			Player p = (Player) e.getDamager();
+			if(type.equals(EntityType.ENDER_DRAGON)) {
+				if(dragonDamage.containsKey(p.getName())) {
+					double num = dragonDamage.get(p.getName());
+					dragonDamage.replace(p.getName(), num+e.getDamage());
+				}else {
+					dragonDamage.put(p.getName(), e.getDamage());				
+				}
+			}else if(type.equals(EntityType.ENDER_CRYSTAL)) {
+				if(crystalKills.containsKey(p.getName())) {
+					int num = crystalKills.get(p.getName());
+					crystalKills.replace(p.getName(), num+1);
+				}else {
+					crystalKills.put(p.getName(), 1);				
+				}
+			}
+		} else if(e.getDamager().getType().equals(EntityType.ARROW)) {
+			Arrow arrow = (Arrow) e.getDamager();
+			ProjectileSource en = arrow.getShooter();
+			if(en instanceof Player) {
+				Player p = (Player) en;
+				if(type.equals(EntityType.ENDER_DRAGON)) {
+					if(dragonDamage.containsKey(p.getName())) {
+						double num = dragonDamage.get(p.getName());
+						dragonDamage.replace(p.getName(), num+e.getDamage());
+					}else {
+						dragonDamage.put(p.getName(), e.getDamage());				
+					}
+				}else if(type.equals(EntityType.ENDER_CRYSTAL)) {
+					if(crystalKills.containsKey(p.getName())) {
+						int num = crystalKills.get(p.getName());
+						crystalKills.replace(p.getName(), num+1);
+					}else {
+						crystalKills.put(p.getName(), 1);				
+					}
+				}
+			}
+		} else if(e.getDamager().getType().equals(EntityType.TRIDENT)) {
+			Trident trident = (Trident) e.getDamager();
+			ProjectileSource en = trident.getShooter();
+			if(en instanceof Player) {
+				Player p = (Player) en;
+				if(type.equals(EntityType.ENDER_DRAGON)) {
+					if(dragonDamage.containsKey(p.getName())) {
+						double num = dragonDamage.get(p.getName());
+						dragonDamage.replace(p.getName(), num+e.getDamage());
+					}else {
+						dragonDamage.put(p.getName(), e.getDamage());				
+					}
+				}else if(type.equals(EntityType.ENDER_CRYSTAL)) {
+					if(crystalKills.containsKey(p.getName())) {
+						int num = crystalKills.get(p.getName());
+						crystalKills.replace(p.getName(), num+1);
+					}else {
+						crystalKills.put(p.getName(), 1);				
+					}
+				}
+			}
+		}
+	}
 }

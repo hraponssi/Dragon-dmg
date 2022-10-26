@@ -1,6 +1,6 @@
 # Variables: %player% %killer% %dmg% %totaldmg%
 dmglisttitle: "&7--- &dDamage dealt (%totaldmg% total dmg) &7---"
-dmglistentry: "&a%player% &7- &c%dmg% dmg"
+dmglistentry: "&a%player% &7- &c%dmg% dmg &7- &c%crystals% crystals"
 
 killermsg: "&d%killer% has killed the Ender Dragon!"
 announcekiller: true
