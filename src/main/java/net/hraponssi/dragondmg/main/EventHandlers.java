@@ -1,9 +1,12 @@
 package net.hraponssi.dragondmg.main;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,45 +51,39 @@ public class EventHandlers implements Listener {
 				plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
 						plugin.dmgListTitle.replace("%totaldmg%", tsplit[0]))
 						.replace("%killer%", e.getEntity().getKiller().getName()));
-				boolean done = false;
-				while(!done) { //Sends the player list in order of damage done
-					double highest = -1;
-					ArrayList<String> remove = new ArrayList<>();
-					for(Entry<String, Double> entry : dragonDamage.entrySet()) {
+				List<Double> dmgOrder = dragonDamage.values().stream().distinct().collect(Collectors.toList()); //List of all distinct damage values
+				dragonDamage.keySet().stream().forEach(name -> crystalKills.putIfAbsent(name, 0));
+				Collections.sort(dmgOrder, new Comparator<Double>() { //Sort list biggest to smallest
+		            public int compare(Double db1, Double db2) {
+		               	return db2.compareTo(db1);
+		            }
+		        });
+				for(double dmglevel : dmgOrder) { // Iterate over the damage values in order
+					for(Entry<String, Double> entry : dragonDamage.entrySet()) { //Print out players who's damage matches the damage value being processed
 						double dmg = entry.getValue();
-						if(dmg > highest) {
-							highest = dmg;
-						}
-					}
-					for(Entry<String, Double> entry : dragonDamage.entrySet()) {
-						double dmg = entry.getValue();
-						String[] split = Double.toString(dmg).split("\\.");
-						if(dmg == highest) {
+						String cleandmg = Double.toString(dmg).split("\\.")[0];
+						if(dmg == dmglevel) {
 							plugin.sendMessage(ChatColor.translateAlternateColorCodes('&', 
 									plugin.dmgListEntry.replace("%player%", entry.getKey())
-									.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+									.replace("%dmg%", cleandmg).replace("%totaldmg%", tsplit[0])
 									.replace("%crystals%", crystalKills.get(entry.getKey()).toString())
 									.replace("%killer%", e.getEntity().getKiller().getName())));
 							Random random = new Random();
-							int dmgp = (Integer.parseInt(split[0])/Integer.parseInt(tsplit[0]))*100;
+							int dmgp = (Integer.parseInt(cleandmg)/Integer.parseInt(tsplit[0]))*100;
 							if(plugin.dmgReward && random.nextInt(100)+1 <= dmgp) { //if dmg percent less or more than random 1-100 number
 								for(String reward : plugin.dmgRewards) {
 									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
 											reward.replace("%player%", entry.getKey())
-											.replace("%dmg%", split[0]).replace("%totaldmg%", tsplit[0])
+											.replace("%dmg%", cleandmg).replace("%totaldmg%", tsplit[0])
 											.replace("%crystals%", crystalKills.get(entry.getKey()).toString())
 											.replace("%killer%", e.getEntity().getKiller().getName()));
 								}
 							}
-							remove.add(entry.getKey());
 						}
 					}
-					for(String r : remove) {
-						dragonDamage.remove(r);
-						crystalKills.remove(r);
-					}
-					if(dragonDamage.size() <= 0) done = true;
 				}
+				crystalKills.clear();
+				dragonDamage.clear();
 			}
 		}
 	}
