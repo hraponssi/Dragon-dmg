@@ -12,7 +12,7 @@ Damage tracked: melee, arrows, tridents
 
 [Spigotmc](https://www.spigotmc.org/resources/dragon-dmg.99041)
 
-### Commands ###
+### Commands and permissions ###
 
 - ***dragondmg.dragondmg* | /dragondmg** - Admin command used for managing dragondmg
 
