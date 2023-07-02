@@ -15,7 +15,7 @@ enablekillerrewards: false
 killrewards:
     - "give %killer% dragon_egg 1"
     
-#Dmg awards have a chance relative to % dmg done to the dragon (eg 20/100 dmg is a 20% chance).
+#Dmg awards have a chance relative to % dmg done to the dragon (eg 20 out of 100 dmg is a 20% chance).
 enabledmgrewards: false
 dmgrewards:
     - "give %player% elytra 1"

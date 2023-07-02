@@ -23,14 +23,25 @@ public class Commands implements CommandExecutor {
 					plugin.loadConfig();
 					sender.sendMessage(ChatColor.GREEN + "Reloaded dragondmg");
 					break;
+				case "settings":
+                    sender.sendMessage(ChatColor.GREEN + "Currently loaded settings:");
+                    sender.sendMessage(ChatColor.GRAY + "announceKiller = " + plugin.announceKiller);
+                    sender.sendMessage(ChatColor.GRAY + "worldOnlyMsg = " + plugin.worldOnlyMsg);
+                    sender.sendMessage(ChatColor.GRAY + "killReward = " + plugin.killReward);
+                    sender.sendMessage(ChatColor.GRAY + "dmgReward = " + plugin.dmgReward);
+                    sender.sendMessage(ChatColor.GRAY + "killRewards = " + plugin.killRewards.toString());
+                    sender.sendMessage(ChatColor.GRAY + "dmgRewards = " + plugin.dmgRewards.toString());
+                    break;
 				default:
 					sender.sendMessage(ChatColor.GREEN + "Commands:");
 					sender.sendMessage(ChatColor.GRAY + "/dragondmg reload");
+					sender.sendMessage(ChatColor.GRAY + "/dragondmg settings");
 					break;
 				}
 			}else {
 				sender.sendMessage(ChatColor.GREEN + "Commands:");
 				sender.sendMessage(ChatColor.GRAY + "/dragondmg reload");
+				sender.sendMessage(ChatColor.GRAY + "/dragondmg settings");
 			}
 			return true;
 		}

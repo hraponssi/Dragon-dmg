@@ -1,5 +1,5 @@
 name: Dragon-dmg
-version: 1.3.1
+version: ${project.version}
 description: Show damage done to the ender dragon after the kill
 author: Hraponssi
 main: net.hraponssi.dragondmg.main.Main
