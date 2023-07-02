@@ -27,6 +27,7 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Currently loaded settings:");
                     sender.sendMessage(ChatColor.GRAY + "announceKiller = " + plugin.announceKiller);
                     sender.sendMessage(ChatColor.GRAY + "worldOnlyMsg = " + plugin.worldOnlyMsg);
+                    sender.sendMessage(ChatColor.GRAY + "world = " + plugin.worldName);
                     sender.sendMessage(ChatColor.GRAY + "killReward = " + plugin.killReward);
                     sender.sendMessage(ChatColor.GRAY + "dmgReward = " + plugin.dmgReward);
                     sender.sendMessage(ChatColor.GRAY + "killRewards = " + plugin.killRewards.toString());
