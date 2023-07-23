@@ -8,14 +8,20 @@ announcekiller: true
 worldonlymsg: false
 worldname: world_the_end
 
-#Award variables are the same as for messages. 
+# Award variables are the same as for messages.
 
-#Award for the dragon killer.
+# XP awards. Damage multiplier means multiplying xp gain by your % of damage done,
+# or giving a flat rate (basexp) to everyone. Basexp is the base xp level for multiplication or giving to everyone.
+enablexprewards: false
+damagexpmultiplier: false
+basexp: 100
+
+# Award for the dragon killer.
 enablekillerrewards: false
 killrewards:
     - "give %killer% dragon_egg 1"
     
-#Dmg awards have a chance relative to % dmg done to the dragon (eg 20 out of 100 dmg is a 20% chance).
+# Dmg awards have a chance relative to % dmg done to the dragon (eg 20 out of 100 dmg is a 20% chance).
 enabledmgrewards: false
 dmgrewards:
     - "give %player% elytra 1"
