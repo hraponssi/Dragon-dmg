@@ -16,6 +16,10 @@ enablexprewards: false
 damagexpmultiplier: false
 basexp: 100
 
+# Crystals can give an additional percent of "damage dealt", boosting your rewards.
+crystalrewardboost: false
+crystalboostpercent: 5
+
 # Award for the dragon killer.
 enablekillerrewards: false
 killrewards:

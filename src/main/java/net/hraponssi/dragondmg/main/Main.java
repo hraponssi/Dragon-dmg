@@ -16,6 +16,7 @@ public class Main extends JavaPlugin implements Listener {
     boolean worldOnlyMsg;
     boolean xpReward;
     boolean damageXPMultiplier;
+    boolean crystalRewardBoost;
     boolean killReward;
     boolean dmgReward;
 
@@ -25,6 +26,7 @@ public class Main extends JavaPlugin implements Listener {
     String worldName;
 
     int baseXP;
+    int crystalBoostPercent;
 
     List<String> killRewards;
     List<String> dmgRewards;
@@ -48,6 +50,8 @@ public class Main extends JavaPlugin implements Listener {
         xpReward = config.getBoolean("enablexprewards");
         damageXPMultiplier = config.getBoolean("damagexpmultiplier");
         baseXP = config.getInt("basexp");
+        crystalRewardBoost = config.getBoolean("crystalrewardboost");
+        crystalBoostPercent = config.getInt("crystalboostpercent");
         killReward = config.getBoolean("enablekillerrewards");
         dmgReward = config.getBoolean("enabledmgrewards");
         worldName = config.getString("worldname");

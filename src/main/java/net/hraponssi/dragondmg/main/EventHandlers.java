@@ -74,11 +74,15 @@ public class EventHandlers implements Listener {
                             Random random = new Random();
                             float dmgp = (Float.parseFloat(cleandmg) / Float.parseFloat(tsplit[0])) * 100;
                             // Rewards
+                            int boost = 0;
+                            if (plugin.crystalRewardBoost) {
+                                boost = crystalKills.getOrDefault(entry.getKey(), 0) * plugin.crystalBoostPercent;
+                            }
                             if (plugin.xpReward) {
                                 Player player = Bukkit.getPlayer(entry.getKey());
                                 if (player != null) {
                                     if (plugin.damageXPMultiplier) {
-                                        float xp = ((float) plugin.baseXP) * (dmgp / 100f);
+                                        float xp = ((float) plugin.baseXP) * (Math.min(dmgp+boost, 100) / 100f);
                                         plugin.getLogger().info("agive xp " + player.getName() + " " + xp);
                                         player.giveExp(Math.round(xp));
                                     } else {
@@ -86,7 +90,7 @@ public class EventHandlers implements Listener {
                                     }
                                 }
                             }
-                            if (plugin.dmgReward && random.nextInt(100) + 1 <= dmgp) { //if dmg percent equal or more than random 1-100 number
+                            if (plugin.dmgReward && random.nextInt(100) + 1 <= Math.min(dmgp+boost, 100)) { //if dmg percent equal or more than random 1-100 number
                                 for (String reward : plugin.dmgRewards) {
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                                             reward.replace("%player%", entry.getKey()).replace("%dmg%", cleandmg)

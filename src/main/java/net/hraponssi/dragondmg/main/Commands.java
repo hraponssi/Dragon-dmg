@@ -31,6 +31,8 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(ChatColor.GRAY + "xpReward = " + plugin.xpReward);
                     sender.sendMessage(ChatColor.GRAY + "damageXPMultiplier = " + plugin.damageXPMultiplier);
                     sender.sendMessage(ChatColor.GRAY + "baseXP = " + plugin.baseXP);
+                    sender.sendMessage(ChatColor.GRAY + "crystalRewardBoost = " + plugin.crystalRewardBoost);
+                    sender.sendMessage(ChatColor.GRAY + "crystalBoostPercent = " + plugin.crystalBoostPercent);
                     sender.sendMessage(ChatColor.GRAY + "killReward = " + plugin.killReward);
                     sender.sendMessage(ChatColor.GRAY + "dmgReward = " + plugin.dmgReward);
                     sender.sendMessage(ChatColor.GRAY + "killRewards = " + plugin.killRewards.toString());
