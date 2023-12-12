@@ -20,12 +20,15 @@ basexp: 100
 crystalrewardboost: false
 crystalboostpercent: 5
 
-# Award for the dragon killer.
+# Commands to be run when the dragon is killed, e.g. killer awards or item drops. placeholders: %killer% %coordinates% %world%
+# The world name can be either the spigot name, or vanilla /execute command friendly name (spigot: "world_the_end", vanilla: "the_end")
 enablekillerrewards: false
+executefriendlyworldnames: true
 killrewards:
-    - "give %killer% dragon_egg 1"
+    - 'give %killer% dragon_egg 1'
+    - 'execute in minecraft:%world% run summon item %coordinates% {Item:{id:"minecraft:elytra",Count:1}}'
     
 # Dmg awards have a chance relative to % dmg done to the dragon (eg 20 out of 100 dmg is a 20% chance).
 enabledmgrewards: false
 dmgrewards:
-    - "give %player% elytra 1"
+    - 'give %player% elytra 1'

@@ -19,6 +19,7 @@ public class Main extends JavaPlugin implements Listener {
     boolean crystalRewardBoost;
     boolean killReward;
     boolean dmgReward;
+    boolean executeFriendlyNames;
 
     String dmgListTitle;
     String dmgListEntry;
@@ -60,6 +61,7 @@ public class Main extends JavaPlugin implements Listener {
         killerMsg = config.getString("killermsg");
         killRewards = config.getStringList("killrewards");
         dmgRewards = config.getStringList("dmgrewards");
+        executeFriendlyNames = config.getBoolean("executefriendlyworldnames");
     }
 
     public void sendMessage(String msg) {

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -37,23 +38,39 @@ public class EventHandlers implements Listener {
         if (type.equals(EntityType.ENDER_DRAGON)) {
             if (e.getEntity().getKiller().getType().equals(EntityType.PLAYER)) {
                 double total = 0;
+                Location loc = e.getEntity().getLocation();
+                String cleanedWorldName = loc.getWorld().getName();
+                String defaultPrefix = Bukkit.getWorlds().get(0).getName();
+                if (plugin.executeFriendlyNames) {
+                    // Vanilla Minecraft execute commands don't include the default world name like Spigot does, instead using "overworld", "the_end", etc
+                    // Because of this the overworld, nether, and end have special cases:
+                    if (cleanedWorldName.equals(defaultPrefix)) {
+                        cleanedWorldName = "overworld";
+                    } else if (cleanedWorldName.equals(defaultPrefix + "_the_end")) {
+                        cleanedWorldName = cleanedWorldName.replace(defaultPrefix + "_", "");
+                    } else if (cleanedWorldName.equals(defaultPrefix + "_the_nether")) {
+                        cleanedWorldName = cleanedWorldName.replace(defaultPrefix + "_", "");
+                    }
+                }
                 for (Entry<String, Double> entry : dragonDamage.entrySet()) {
                     total += entry.getValue();
                 }
                 String[] tsplit = Double.toString(total).split("\\.");
                 if (plugin.announceKiller) {
                     plugin.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                            plugin.killerMsg.replace("%killer%", e.getEntity().getKiller().getName())));
+                            plugin.killerMsg.replaceAll("%killer%", e.getEntity().getKiller().getName())));
                 }
                 if (plugin.killReward) {
                     for (String reward : plugin.killRewards) {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                                reward.replace("%killer%", e.getEntity().getKiller().getName()));
+                                reward.replaceAll("%killer%", e.getEntity().getKiller().getName())
+                                        .replaceAll("%world%", cleanedWorldName)
+                                        .replaceAll("%coordinates%", loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ()));
                     }
                 }
                 plugin.sendMessage(ChatColor
-                        .translateAlternateColorCodes('&', plugin.dmgListTitle.replace("%totaldmg%", tsplit[0]))
-                        .replace("%killer%", e.getEntity().getKiller().getName()));
+                        .translateAlternateColorCodes('&', plugin.dmgListTitle.replaceAll("%totaldmg%", tsplit[0]))
+                        .replaceAll("%killer%", e.getEntity().getKiller().getName()));
                 List<Double> dmgOrder = dragonDamage.values().stream().distinct().collect(Collectors.toList()); //List of all distinct damage values
                 dragonDamage.keySet().stream().forEach(name -> crystalKills.putIfAbsent(name, 0));
                 Collections.sort(dmgOrder, new Comparator<Double>() { //Sort list biggest to smallest
@@ -62,15 +79,15 @@ public class EventHandlers implements Listener {
                     }
                 });
                 for (double dmglevel : dmgOrder) { // Iterate over the damage values in order
-                    for (Entry<String, Double> entry : dragonDamage.entrySet()) { //Print out players who's damage matches the damage value being processed
+                    for (Entry<String, Double> entry : dragonDamage.entrySet()) { // Print out players who's damage matches the damage value being processed
                         double dmg = entry.getValue();
                         String cleandmg = Double.toString(dmg).split("\\.")[0];
                         if (dmg == dmglevel) {
                             plugin.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                    plugin.dmgListEntry.replace("%player%", entry.getKey()).replace("%dmg%", cleandmg)
-                                            .replace("%totaldmg%", tsplit[0])
-                                            .replace("%crystals%", crystalKills.get(entry.getKey()).toString())
-                                            .replace("%killer%", e.getEntity().getKiller().getName())));
+                                    plugin.dmgListEntry.replaceAll("%player%", entry.getKey()).replaceAll("%dmg%", cleandmg)
+                                            .replaceAll("%totaldmg%", tsplit[0])
+                                            .replaceAll("%crystals%", crystalKills.get(entry.getKey()).toString())
+                                            .replaceAll("%killer%", e.getEntity().getKiller().getName())));
                             Random random = new Random();
                             float dmgp = (Float.parseFloat(cleandmg) / Float.parseFloat(tsplit[0])) * 100;
                             // Rewards
@@ -83,20 +100,20 @@ public class EventHandlers implements Listener {
                                 if (player != null) {
                                     if (plugin.damageXPMultiplier) {
                                         float xp = ((float) plugin.baseXP) * (Math.min(dmgp+boost, 100) / 100f);
-                                        plugin.getLogger().info("agive xp " + player.getName() + " " + xp);
+                                        // plugin.getLogger().info("agive xp " + player.getName() + " " + xp);
                                         player.giveExp(Math.round(xp));
                                     } else {
                                         player.giveExp(plugin.baseXP);
                                     }
                                 }
                             }
-                            if (plugin.dmgReward && random.nextInt(100) + 1 <= Math.min(dmgp+boost, 100)) { //if dmg percent equal or more than random 1-100 number
+                            if (plugin.dmgReward && random.nextInt(100) + 1 <= Math.min(dmgp+boost, 100)) { // if dmg percent equal or more than random 1-100 number
                                 for (String reward : plugin.dmgRewards) {
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                                            reward.replace("%player%", entry.getKey()).replace("%dmg%", cleandmg)
-                                                    .replace("%totaldmg%", tsplit[0])
-                                                    .replace("%crystals%", crystalKills.get(entry.getKey()).toString())
-                                                    .replace("%killer%", e.getEntity().getKiller().getName()));
+                                            reward.replaceAll("%player%", entry.getKey()).replaceAll("%dmg%", cleandmg)
+                                                    .replaceAll("%totaldmg%", tsplit[0])
+                                                    .replaceAll("%crystals%", crystalKills.get(entry.getKey()).toString())
+                                                    .replaceAll("%killer%", e.getEntity().getKiller().getName()));
                                 }
                             }
                         }
