@@ -3,7 +3,7 @@ version: ${project.version}
 description: Show damage done to the ender dragon after the kill
 author: Hraponssi
 main: net.hraponssi.dragondmg.main.Main
-api-version: 1.17
+api-version: 1.13
 commands:
   dragondmg:
     description: Manage dragon dmg
