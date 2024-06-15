@@ -137,7 +137,8 @@ public class EventHandlers implements Listener {
                 } else {
                     dragonDamage.put(p.getName(), e.getDamage());
                 }
-            } else if (type.equals(EntityType.ENDER_CRYSTAL)) {
+            // hacky way to get around END vs ENDER
+            } else if (type.name().startsWith("END") && type.name().endsWith("_CRYSTAL")) {
                 if (crystalKills.containsKey(p.getName())) {
                     int num = crystalKills.get(p.getName());
                     crystalKills.replace(p.getName(), num + 1);
@@ -157,7 +158,7 @@ public class EventHandlers implements Listener {
                     } else {
                         dragonDamage.put(p.getName(), e.getDamage());
                     }
-                } else if (type.equals(EntityType.ENDER_CRYSTAL)) {
+                } else if (type.name().startsWith("END") && type.name().endsWith("_CRYSTAL")) {
                     if (crystalKills.containsKey(p.getName())) {
                         int num = crystalKills.get(p.getName());
                         crystalKills.replace(p.getName(), num + 1);
@@ -178,7 +179,7 @@ public class EventHandlers implements Listener {
                     } else {
                         dragonDamage.put(p.getName(), e.getDamage());
                     }
-                } else if (type.equals(EntityType.ENDER_CRYSTAL)) {
+                } else if (type.name().startsWith("END") && type.name().endsWith("_CRYSTAL")) {
                     if (crystalKills.containsKey(p.getName())) {
                         int num = crystalKills.get(p.getName());
                         crystalKills.replace(p.getName(), num + 1);
