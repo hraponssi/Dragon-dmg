@@ -39,6 +39,7 @@ public class Main extends JavaPlugin implements Listener {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new EventHandlers(this), this);
         getCommand("dragondmg").setExecutor(new Commands(this));
+        getCommand("dragondmg").setTabCompleter(new CommandCompletion());
         saveDefaultConfig();
         loadConfig();
     }
